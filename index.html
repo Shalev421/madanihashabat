@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>מערכת ההזמנות - מעדני השבת של מוריה</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f9f7f1;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      background-color: #fff;
+      border-bottom: 2px solid #e0c479;
+    }
+    header img {
+      max-width: 150px;
+    }
+    h1 {
+      margin: 10px 0 0 0;
+      color: #c59d5f;
+    }
+    .accordion {
+      background-color: #fff;
+      color: #444;
+      cursor: pointer;
+      padding: 15px;
+      width: 90%;
+      border: none;
+      text-align: right;
+      outline: none;
+      font-size: 18px;
+      transition: 0.4s;
+      margin: 10px auto;
+      border-radius: 8px;
+      border: 1px solid #e0c479;
+    }
+    .active, .accordion:hover {
+      background-color: #f1e5c2;
+    }
+    .panel {
+      padding: 0 15px;
+      display: none;
+      background-color: white;
+      overflow: hidden;
+      width: 86%;
+      margin: auto;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+    .panel p {
+      margin: 10px 0;
+    }
+    button.whatsapp-btn {
+      background-color: #25D366;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    button.whatsapp-btn:hover {
+      background-color: #1ebe57;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="לוגו מעדני השבת של מוריה" />
+  <h1>מערכת ההזמנות</h1>
+</header>
+
+<div id="orders">טוען הזמנות...</div>
+
+<script>
+function renderOrders(orders) {
+  const container = document.getElementById("orders");
+  container.innerHTML = "";
+  
+  orders.forEach(order => {
+    const acc = document.createElement("button");
+    acc.className = "accordion";
+    acc.innerText = order.שם;
+
+    const panel = document.createElement("div");
+    panel.className = "panel";
+    panel.innerHTML = `
+      <p><strong>פריטים:</strong> ${order.פריטים}</p>
+      <p><strong>טלפון:</strong> ${order.טלפון}</p>
+      <button class="whatsapp-btn" onclick="window.open('https://wa.me/972${order.טלפון.slice(1)}?text=שלום ${order.שם}! ההזמנה שלך התקבלה ואנחנו מטפלים בה עכשיו 😊')">שלח הודעה בוואטסאפ</button>
+    `;
+
+    acc.addEventListener("click", function() {
+      this.classList.toggle("active");
+      if (panel.style.display === "block") {
+        panel.style.display = "none";
+      } else {
+        panel.style.display = "block";
+      }
+    });
+
+    container.appendChild(acc);
+    container.appendChild(panel);
+  });
+}
+
+fetch('https://sheetdb.io/api/v1/0o1qr527ecz84')
+  .then(response => response.json())
+  .then(data => {
+    renderOrders(data);
+  })
+  .catch(error => {
+    document.getElementById("orders").innerHTML = "שגיאה בטעינת ההזמנות 😥";
+    console.error("Error fetching data:", error);
+  });
+</script>
+
+</body>
+</html>
